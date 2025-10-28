@@ -46,4 +46,7 @@ python src/train.py trainer=gpu
 
 ## References
 
-[lus105/DeepTrainer](https://github.com/lus105/DeepTrainer)
+[lus105/DeepTrainer](https://github.com/lus105/DeepTrainer)  
+
+## Acknowledgement  
+Derived from [https://github.com/lus105/DeepVisionXplain](https://github.com/lus105/DeepVisionXplain)
