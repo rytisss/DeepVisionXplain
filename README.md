@@ -17,7 +17,7 @@ Neural network training environment (including various MLOps tools) with trainin
 #### Conda installation
 ```bash
 # clone project
-git clone https://github.com/lus105/DeepVisionXplain.git
+git clone https://github.com/rytisss/DeepVisionXplain.git
 # change directory
 cd DeepVisionXplain
 # update conda
