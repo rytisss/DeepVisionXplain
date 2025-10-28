@@ -43,7 +43,6 @@ python src/train.py trainer=gpu
 
 [CNN/ViT (ante-hoc) explainability](docs/explainability.md)
 
-
 ## References
 
 [lus105/DeepTrainer](https://github.com/lus105/DeepTrainer)  
