@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   deepvisionxplain:
-    image: ghcr.io/lus105/deepvisionxplain:latest
+    image: ghcr.io/rytisss/deepvisionxplain:latest
     
     ports:
       - "9090:8000"
