@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 
-
 class SimpleDenseNet(nn.Module):
     """A simple fully-connected neural net for computing predictions."""
 
@@ -53,6 +52,8 @@ class SimpleDenseNet(nn.Module):
 
         return self.model(x)
 
+torch.serialization.add_safe_globals([SimpleDenseNet])
 
 if __name__ == '__main__':
     _ = SimpleDenseNet()
+
