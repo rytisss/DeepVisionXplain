@@ -53,6 +53,7 @@ class SimpleDenseNet(nn.Module):
         return self.model(x)
 
 torch.serialization.add_safe_globals([SimpleDenseNet])
+torch.serialization.add_safe_globals([torch.nn.modules.container.Sequential])
 
 if __name__ == '__main__':
     _ = SimpleDenseNet()
