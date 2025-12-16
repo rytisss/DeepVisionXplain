@@ -49,4 +49,4 @@ python src/train.py trainer=gpu
 [lus105/DeepTrainer](https://github.com/lus105/DeepTrainer)  
 
 ## Acknowledgement  
-Derived from [https://github.com/lus105/DeepVisionXplain](https://github.com/lus105/DeepVisionXplain)
+Derived from [https://github.com/lus105/DeepVisionXplain](https://github.com/lus105/DeepVisionXplain) and slightly changed
