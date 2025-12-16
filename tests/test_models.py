@@ -3,9 +3,8 @@ import omegaconf
 import torch
 import pytest
 
-from torch.serialization import add_safe_globals
-from src.models.components.simple_dense_net import SimpleDenseNet
-add_safe_globals([SimpleDenseNet])
+# add safe globals for torch serialization. Required for simple_dense_net tests
+torch.serialization.safe_globals([torch.nn.modules.container.Sequential])
 
 @pytest.mark.parametrize('num_classes', [1, 10])
 def test_simple_net(num_classes: int):
