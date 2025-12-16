@@ -3,6 +3,9 @@ import omegaconf
 import torch
 import pytest
 
+from torch.serialization import add_safe_globals
+from src.models.components.simple_dense_net import SimpleDenseNet
+add_safe_globals([SimpleDenseNet])
 
 @pytest.mark.parametrize('num_classes', [1, 10])
 def test_simple_net(num_classes: int):
