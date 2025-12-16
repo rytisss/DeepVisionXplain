@@ -8,9 +8,9 @@ channels:
 
 dependencies:
   - python=3.11
-  - pytorch=2.5.1
+  - pytorch=2.7.1
   - torchvision
-  - pytorch-cuda=12.4
+  - pytorch-cuda=12.6
   - lightning
   - torchmetrics
 
