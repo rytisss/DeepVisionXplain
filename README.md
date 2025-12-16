@@ -1,6 +1,5 @@
 <div align='center'>
 
-
 # DeepVisionXplain
 <img src="docs/res/logo_xplain.png" width="100" />
 
