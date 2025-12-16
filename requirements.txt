@@ -1,5 +1,5 @@
 # --------- pytorch --------- #
-torch==2.7.1
+torch
 torchvision
 lightning
 torchmetrics
