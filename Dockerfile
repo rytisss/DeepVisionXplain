@@ -1,4 +1,4 @@
-ARG PYTORCH_VERSION="2.7.1"
+rARG PYTORCH_VERSION="2.7.1"
 ARG CUDA_VERSION="12.6"
 ARG CUDNN_VERSION="9"
 
@@ -48,7 +48,7 @@ USER appuser
 # ------------------------------- requirements ----------------------------- #
 
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r /app/requirements.txt
+    && pip install --no-cache-dir -r --user /app/requirements.txt
 
 # ------------------------------- ports ------------------------------------ #
 
