@@ -8,6 +8,9 @@ from omegaconf import DictConfig, open_dict
 from src.eval import evaluate
 from src.train import train
 
+import functools
+import torch
+torch.serialization.add_safe_globals([functools.partial])
 
 @pytest.mark.slow
 def test_train_eval(

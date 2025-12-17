@@ -7,7 +7,7 @@ def weight_load(
     ckpt_path: str,
     remove_prefix: str = 'net.',
     ext: str = '.ckpt',
-    weights_only: bool = False,
+    weights_only: bool = True,
 ) -> dict:
     """Model weight loading helper function.
 

@@ -3,7 +3,6 @@ import omegaconf
 import torch
 import pytest
 
-
 @pytest.mark.parametrize('num_classes', [1, 10])
 def test_simple_net(num_classes: int):
     cfg = {
@@ -20,7 +19,7 @@ def test_simple_net(num_classes: int):
 
     assert output.size(dim=0) == batch_size
     assert output.size(dim=1) == num_classes
-
+    
 
 def test_cnn_cam_multihead():
     cfg = {

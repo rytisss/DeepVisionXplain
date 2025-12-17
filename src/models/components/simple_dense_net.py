@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 
-
 class SimpleDenseNet(nn.Module):
     """A simple fully-connected neural net for computing predictions."""
 
@@ -53,6 +52,29 @@ class SimpleDenseNet(nn.Module):
 
         return self.model(x)
 
+import omegaconf
+import typing
+import collections   
+# Register classes for safe serialization
+torch.serialization.add_safe_globals([
+    SimpleDenseNet,
+    torch.nn.Linear,
+    torch.nn.BatchNorm1d,
+    torch.nn.ReLU,
+    torch.nn.Sequential,
+    torch.optim.Adam,
+    torch.optim.lr_scheduler.ReduceLROnPlateau,
+    omegaconf.listconfig.ListConfig,
+    omegaconf.base.ContainerMetadata,
+    omegaconf.nodes.AnyNode,
+    omegaconf.base.Metadata,
+    collections.defaultdict,
+    typing.Any,
+    list,
+    dict,
+    int
+])
 
 if __name__ == '__main__':
     _ = SimpleDenseNet()
+
