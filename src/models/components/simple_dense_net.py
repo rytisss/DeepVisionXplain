@@ -52,13 +52,27 @@ class SimpleDenseNet(nn.Module):
 
         return self.model(x)
 
-from torch.nn import Linear, BatchNorm1d, ReLU, Sequential
+import omegaconf
+import typing
+import collections   
+# Register classes for safe serialization
 torch.serialization.add_safe_globals([
     SimpleDenseNet,
-    Linear,
-    BatchNorm1d,
-    ReLU,
-    Sequential,
+    torch.nn.Linear,
+    torch.nn.BatchNorm1d,
+    torch.nn.ReLU,
+    torch.nn.Sequential,
+    torch.optim.Adam,
+    torch.optim.lr_scheduler.ReduceLROnPlateau,
+    omegaconf.listconfig.ListConfig,
+    omegaconf.base.ContainerMetadata,
+    omegaconf.nodes.AnyNode,
+    omegaconf.base.Metadata,
+    collections.defaultdict,
+    typing.Any,
+    list,
+    dict,
+    int
 ])
 
 if __name__ == '__main__':
