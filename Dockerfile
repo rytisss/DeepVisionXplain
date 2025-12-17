@@ -50,6 +50,10 @@ USER appuser
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir --user -r /app/requirements.txt
 
+# ------------------------------- cuda expose ------------------------------ #
+
+RUN export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/python3.11/site-packages/nvidia/cudnn/lib/
+
 # ------------------------------- ports ------------------------------------ #
 
 EXPOSE 8000
