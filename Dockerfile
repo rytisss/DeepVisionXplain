@@ -28,6 +28,13 @@ RUN apt-get update \
         iotop \
         dos2unix \
         tzdata \
+        libgl1 \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender-dev \
+        libfontconfig1 \
+        libice6 \
     && rm -rf /var/lib/apt/lists/*
 
 # ------------------------------- timezone setup --------------------------- #
