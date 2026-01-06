@@ -7,6 +7,13 @@ on:
   pull_request:
     branches: [main, "release/*", "dev"]
 
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for running'
+        required: false
+        default: 'Manual trigger'
+
 jobs:
   run_tests_ubuntu:
     runs-on: ${{ matrix.os }}
