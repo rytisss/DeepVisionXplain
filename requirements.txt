@@ -32,3 +32,4 @@ ipykernel
 pandas
 fastapi[standard]
 uvicorn
+albumentations

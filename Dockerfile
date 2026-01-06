@@ -1,4 +1,4 @@
-ARG PYTORCH_VERSION="2.7.1"
+ARG PYTORCH_VERSION="2.9.1"
 ARG CUDA_VERSION="12.6"
 ARG CUDNN_VERSION="9"
 
@@ -28,6 +28,13 @@ RUN apt-get update \
         iotop \
         dos2unix \
         tzdata \
+        libgl1 \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender-dev \
+        libfontconfig1 \
+        libice6 \
     && rm -rf /var/lib/apt/lists/*
 
 # ------------------------------- timezone setup --------------------------- #
