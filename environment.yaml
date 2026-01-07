@@ -10,7 +10,7 @@ dependencies:
   - python=3.11
   - pytorch=2.9.1
   - torchvision
-  - pytorch-cuda=12.6
+  - pytorch-cuda=12.8
   - lightning
   - torchmetrics
 

@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         PYTORCH_VERSION: "2.9.1"
-        CUDA_VERSION: "12.6"
+        CUDA_VERSION: "12.8"
         CUDNN_VERSION: "9"
     
     ports:
