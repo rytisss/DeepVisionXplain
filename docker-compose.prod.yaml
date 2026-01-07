@@ -25,6 +25,9 @@ services:
     # Enable GPU support
     runtime: nvidia
     
+    # Enable TTY for real-time output streaming (progress bars, logs)
+    tty: true
+    
     restart: unless-stopped
 
 networks:
