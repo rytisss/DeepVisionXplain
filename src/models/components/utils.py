@@ -51,7 +51,20 @@ def export_model_to_onnx(
         opset_version (int, optional): The ONNX opset version to use. Defaults to 19.
     """
     model.eval()
-    dummy_input = torch.randn(*input_shape)
+    
+    # Trace with a larger batch size to ensure dynamic batch dimension is properly handled
+    # This prevents hardcoded batch size 1 in reshape operations
+    batch_size = input_shape[0]
+    if batch_size == 1:
+        # Use batch size 2 for tracing to ensure dynamic batch handling
+        trace_shape = (2,) + input_shape[1:]
+        dummy_input = torch.randn(*trace_shape)
+    else:
+        dummy_input = torch.randn(*input_shape)
+    
+    # Export to ONNX with all data embedded in a single file
+    # external_data=False prevents creation of separate .onnx.data file
+    # do_constant_folding=False prevents optimizations that might hardcode batch sizes
     torch.onnx.export(
         model,
         dummy_input,
@@ -63,4 +76,6 @@ def export_model_to_onnx(
             'output': {0: 'batch_size'},
         },
         opset_version=opset_version,
+        external_data=False,  # Embed all weights in the ONNX file
+        do_constant_folding=False,  # Prevent optimizations that might hardcode batch sizes
     )
