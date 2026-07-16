@@ -23,5 +23,7 @@ data:
 
 model:
   net:
-    multi_head: false
+    multi_head: true
   ckpt_path: null
+
+export_to_onnx: True

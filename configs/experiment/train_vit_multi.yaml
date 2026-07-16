@@ -22,8 +22,10 @@ data:
 
 model:
   net:
-    multi_head: false
+    multi_head: true
   optimizer:
     lr: 5e-5
   compile: false
   ckpt_path: null
+
+export_to_onnx: True
