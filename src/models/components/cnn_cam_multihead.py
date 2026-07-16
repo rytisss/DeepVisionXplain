@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any, Union
 import rootutils
 import torch
 import torch.nn as nn
@@ -167,6 +167,20 @@ class CNNCAMMultihead(nn.Module):
             last_layer_features=self.feature_extractor.n_features
         )
         self.cam_generator = ClassActivationMapGenerator(self.output_layer.fc)
+
+    def load_model(self, num_classes: int = 2, **additional_kwargs: Any) -> None:
+        """Interface compatibility with `BaseModel`: the network is fully built in `__init__`.
+
+        Args:
+            num_classes (int, optional): Number of dataset classes. The binary
+            classification head has a single output neuron, so at most 2 classes
+            are supported. Defaults to 2.
+        """
+        if num_classes > 2:
+            raise ValueError(
+                f'CNNCAMMultihead has a binary classification head and supports '
+                f'at most 2 classes, got {num_classes}'
+            )
 
     def forward(
         self, input: torch.Tensor
