@@ -1,6 +1,6 @@
 services:
   deepvisionxplain:
-    image: ghcr.io/rytisss/deepvisionxplain:latest
+    image: ghcr.io/rytisss/deepvisionxplain:cam
     
     ports:
       - "9090:8000"
