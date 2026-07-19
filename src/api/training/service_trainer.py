@@ -181,6 +181,19 @@ class TrainingManager:
         if not base_path.exists():
             return AvailableDatasetsResponse(datasets=[])
 
+        def resolve_split(split_dir: Path) -> Path:
+            """Resolve a split directory to its ImageFolder class root.
+
+            Splits laid out as ``<split>/images/<class>/*`` (with sibling
+            ``labels/``) must be trained on the ``images`` subdirectory —
+            pointing ImageFolder at the split root makes it classify
+            ``images`` vs ``labels`` instead of the real classes.
+            """
+            images_dir = split_dir / 'images'
+            if images_dir.is_dir():
+                return images_dir
+            return split_dir
+
         datasets = []
 
         # Iterate through all directories in the base path
@@ -194,6 +207,10 @@ class TrainingManager:
                 has_train = train_dir.exists() and train_dir.is_dir()
                 has_test = test_dir.exists() and test_dir.is_dir()
                 has_val = val_dir.exists() and val_dir.is_dir()
+
+                train_dir = resolve_split(train_dir)
+                test_dir = resolve_split(test_dir)
+                val_dir = resolve_split(val_dir)
 
                 # Include dataset if it has at least train and test directories
                 if has_train and has_test:
