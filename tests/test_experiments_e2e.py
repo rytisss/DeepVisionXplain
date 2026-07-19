@@ -120,6 +120,12 @@ def test_train_grain_multiclass_end_to_end(tmp_path):
         tmp_path,
         experiment='train_grain',
         num_classes=3,
-        extra_overrides=['model.net.pretrained=false'],
+        extra_overrides=[
+            'model.net.pretrained=false',
+            # The experiment config pins bf16-mixed for GPU training; on the
+            # CPU-only CI runners bf16 kernels can hit unsupported instructions
+            # (0xc000001d), so the test forces full precision.
+            'trainer.precision=32-true',
+        ],
     )
     assert_exported_classifier(onnx_path, class_neurons=3)
