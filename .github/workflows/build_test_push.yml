@@ -102,21 +102,21 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             type=raw,value=cam,enable=${{ github.ref == 'refs/heads/cam' }}
 
+      # No provenance/SBOM attestations: they are pushed as UNTAGGED child
+      # versions of a tagged index, which the untagged-version cleanup job then
+      # deletes — leaving the tag pointing at missing manifests. A
+      # single-platform build without attestations pushes one tagged manifest
+      # that cleanup can never orphan.
       - name: Build and push
         uses: docker/bake-action@v5
         with:
           files: |
             docker-compose.yaml
           push: true
+          provenance: false
+          sbom: false
           set: |
             *.platform=linux/amd64
-            # No provenance/SBOM attestations: they are pushed as UNTAGGED child
-            # versions of a tagged index, which the untagged-version cleanup job
-            # then deletes — leaving the tag pointing at missing manifests. A
-            # single-platform build without attestations pushes one tagged
-            # manifest that cleanup can never orphan.
-            *.provenance=false
-            *.sbom=false
             *.cache-from=type=gha
             *.cache-to=type=gha,mode=max
             deepvisionxplain.tags=${{ steps.meta.outputs.tags }}
