@@ -40,6 +40,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install sh
+          # CI runners have no CUDA; the GPU onnxruntime wheel fails at import
+          # on Linux (libcudart). Swap in the CPU build for tests only.
+          pip uninstall -y onnxruntime-gpu
+          pip install onnxruntime
 
       - name: List dependencies
         run: |
@@ -73,6 +77,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          # CI runners have no CUDA; use the CPU onnxruntime build for tests.
+          pip uninstall -y onnxruntime-gpu
+          pip install onnxruntime
 
       - name: List dependencies
         run: |
