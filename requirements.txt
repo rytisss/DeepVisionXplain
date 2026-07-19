@@ -34,3 +34,8 @@ pandas
 fastapi[standard]
 uvicorn
 albumentations
+# stringzilla is pulled in by albumentations (via albucore); 4.6.2 ships no
+# manylinux wheel for Python 3.11 (the pytorch base image), forcing a source
+# build that fails in the runtime image. Pin to the last release with cp311
+# wheels for both Linux and Windows.
+stringzilla==4.6.1
