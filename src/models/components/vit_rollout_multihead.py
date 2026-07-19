@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Any, Union
 import rootutils
 import torch
 import torch.nn as nn
@@ -130,6 +130,7 @@ class VitRolloutMultihead(nn.Module):
         super().__init__()
         self.return_nodes = return_nodes
         self.head_name = head_name
+        self.output_size = output_size
         model = get_model(
             backbone, pretrained=pretrained, num_classes=output_size, img_size=img_size
         )
@@ -138,6 +139,20 @@ class VitRolloutMultihead(nn.Module):
             discard_ratio=discard_ratio, head_fusion=head_fusion
         )
         self.multi_head = multi_head
+
+    def load_model(self, num_classes: int = 2, **additional_kwargs: Any) -> None:
+        """Interface compatibility with `BaseModel`: the network is fully built in `__init__`.
+
+        Args:
+            num_classes (int, optional): Number of dataset classes. Must fit the
+            `output_size` the classification head was built with (a single output
+            neuron covers binary classification). Defaults to 2.
+        """
+        if num_classes > 2 and num_classes != self.output_size:
+            raise ValueError(
+                f'VitRolloutMultihead was built with output_size={self.output_size} '
+                f'and cannot handle {num_classes} classes'
+            )
 
     def _create_feature_extractor(self, model: nn.Module):
         """Creates feature extractor.

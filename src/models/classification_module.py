@@ -99,12 +99,15 @@ class ClassificationLitModule(LightningModule):
         """
         x, y = batch
         logits = self.forward(x)
+        if isinstance(logits, tuple):
+            # multi-head nets return (logits, explainability map)
+            logits = logits[0]
 
         if self.num_classes == 2 and logits.shape[-1] == 1:
             # Binary classification with single output neuron
             y = y.view(-1, 1).float()
             loss = self.criterion(logits, y)
-            preds = (torch.sigmoid(logits) > 0.5).float().squeeze()
+            preds = (self._binary_probs(logits) > 0.5).float().squeeze()
             y = y.squeeze()
         else:
             # Multi-class or binary with 2 output neurons
@@ -208,15 +211,35 @@ class ClassificationLitModule(LightningModule):
         """
         x, y = batch
         logits = self.forward(x)
+        if isinstance(logits, tuple):
+            # multi-head nets return (logits, explainability map)
+            logits = logits[0]
 
         if self.num_classes == 2 and logits.shape[-1] == 1:
             # Binary classification with single output neuron
-            preds = (torch.sigmoid(logits) > 0.5).float().squeeze()
+            preds = (self._binary_probs(logits) > 0.5).float().squeeze()
         else:
             # Multi-class or binary with 2 output neurons
             preds = torch.argmax(logits, dim=1)
 
         return preds
+
+    def _binary_probs(self, logits: torch.Tensor) -> torch.Tensor:
+        """Map single-neuron outputs to probabilities.
+
+        BCELoss consumes probabilities, so nets paired with it (e.g. CNNCAMMultihead)
+        already apply sigmoid in their forward pass; applying it again would push
+        every probability above 0.5 and break the predictions.
+
+        Args:
+            logits (torch.Tensor): Raw model outputs of shape (batch_size, 1).
+
+        Returns:
+            torch.Tensor: Probabilities of the positive class.
+        """
+        if isinstance(self.criterion, torch.nn.BCELoss):
+            return logits
+        return torch.sigmoid(logits)
 
     def setup(self, stage: str) -> None:
         """Lightning hook that is called at the beginning of fit (train + validate), validate,

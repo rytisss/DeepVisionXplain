@@ -2,30 +2,28 @@
 
 defaults:
   - override /data: classification_dir
-  - override /model: vit_multi_tiny
+  - override /model: cnn_multi_effnet_v2_s_down
   - override /callbacks: default
   - override /trainer: default
   - override /logger: csv
 
-tags: ["classification", "train", "vit"]
+tags: ["classification", "train", "cnn"]
 
 seed: 12345
 
 trainer:
-  min_epochs: 10
-  max_epochs: 20
+  min_epochs: 1
+  max_epochs: 2
+  gradient_clip_val: 0.5
   accelerator: gpu
 
 data:
-  batch_size: 64
+  batch_size: 8
   num_workers: 1
 
 model:
   net:
     multi_head: true
-  optimizer:
-    lr: 5e-5
-  compile: false
   ckpt_path: null
 
 export_to_onnx: True

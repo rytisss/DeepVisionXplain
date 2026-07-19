@@ -2,7 +2,7 @@ name: Test and Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main, cam]
     tags:
       - 'v*'
   pull_request:
@@ -92,7 +92,10 @@ jobs:
           images: |
             ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
           tags: |
-            type=raw,value=latest
+            # latest only from the default branch; the cam branch publishes the
+            # :cam variant so downstream consumers of :latest are never affected.
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=cam,enable=${{ github.ref == 'refs/heads/cam' }}
 
       - name: Build and push
         uses: docker/bake-action@v5
@@ -118,5 +121,7 @@ jobs:
           package-name: 'deepvisionxplain'
           package-type: 'container'
           min-versions-to-keep: 4
-          delete-only-untagged-versions: false
+          # Keep every tagged version: rarely-updated tags (cam, v*) must not be
+          # rotated out by frequent latest builds.
+          delete-only-untagged-versions: true
           token: ${{ secrets.PASSWORD }}
