@@ -13,6 +13,9 @@ services:
       - ${host_config_dir}:/app/configs
       - ${host_data_dir}:/app/data
       - ${host_log_dir}:/app/logs
+      # Mount source code so local Python edits (e.g. src/utils/utils.py) take effect
+      # without rebuilding the Docker image - just rebuild EasyODM to refresh this copy.
+      - ${host_src_dir}:/app/src
     
     environment:
       - PYTHONPATH=/app

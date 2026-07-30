@@ -10,7 +10,7 @@ import hydra
 from hydra.core.hydra_config import HydraConfig
 from lightning.pytorch import Callback
 from lightning.pytorch.loggers import Logger
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig, OmegaConf, open_dict
 from lightning_utilities.core.rank_zero import rank_zero_only
 import torch
 
@@ -230,6 +230,64 @@ def is_running_in_docker() -> bool:
         or os.getenv('DOCKER_ENV') is not None
         or os.getenv('CONTAINER') is not None
     )
+
+
+def resolve_wandb_run_name(logger_cfg: DictConfig) -> None:
+    """Makes sure the configured Wandb run name (if any) is unique within its project.
+
+    Wandb happily logs multiple runs under the same display name, but that makes the
+    project hard to browse (e.g. every run started with the GUI's default "Model name"
+    would otherwise look identical). If `logger_cfg.wandb.name` is set and a run with
+    that name already exists in the target project, this appends '_v2', '_v3', ... until
+    it finds a name that isn't taken yet, and mutates `logger_cfg.wandb.name` in place.
+
+    No-ops (with a warning) if wandb isn't installed, no wandb logger is configured, no
+    name was set (i.e. let wandb auto-generate one, as before), or the version lookup
+    fails for any reason (e.g. no network yet, or the project doesn't exist yet - in
+    which case there's nothing to collide with anyway).
+
+    Args:
+        logger_cfg (DictConfig): The (not yet instantiated) `cfg.logger` config group.
+    """
+    if not logger_cfg or 'wandb' not in logger_cfg:
+        return
+
+    base_name = logger_cfg.wandb.get('name')
+    if not base_name:
+        return
+
+    if not find_spec('wandb'):
+        log.warning('Wandb logger is configured with a run name, but the \'wandb\' package '
+                   'is not installed! Run name versioning will be skipped.')
+        return
+
+    import wandb
+
+    project = logger_cfg.wandb.get('project')
+    entity = logger_cfg.wandb.get('entity') or None
+
+    try:
+        api = wandb.Api()
+        entity = entity or api.default_entity
+        existing_names = {run.name for run in api.runs(f'{entity}/{project}')}
+    except Exception as ex:
+        log.warning(f'Could not check existing Wandb run names in \'{project}\' for versioning, '
+                   f'using \'{base_name}\' as-is: {ex}')
+        return
+
+    if base_name not in existing_names:
+        return
+
+    version = 2
+    while f'{base_name}_v{version}' in existing_names:
+        version += 1
+    versioned_name = f'{base_name}_v{version}'
+
+    with open_dict(logger_cfg):
+        logger_cfg.wandb.name = versioned_name
+
+    log.info(f'Wandb run name \'{base_name}\' already exists in \'{project}\', '
+            f'using \'{versioned_name}\' instead')
 
 
 def instantiate_loggers(logger_cfg: DictConfig) -> list[Logger]:

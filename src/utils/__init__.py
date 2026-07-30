@@ -7,6 +7,7 @@ from src.utils.utils import (
     instantiate_callbacks,
     instantiate_loggers,
     log_hyperparameters,
+    resolve_wandb_run_name,
     run_sh_command,
     save_model_metadata,
     is_running_in_docker,
