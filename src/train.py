@@ -14,6 +14,7 @@ rootutils.setup_root(__file__, indicator=['.git', 'pyproject.toml'], pythonpath=
 from src.utils import (
     RankedLogger,
     get_metric_value,
+    disable_wandb_if_unconfigured,
     instantiate_callbacks,
     instantiate_loggers,
     log_hyperparameters,
@@ -54,6 +55,7 @@ def train(cfg: DictConfig) -> tuple[dict[str, Any], dict[str, Any]]:
     )
 
     log.info('Instantiating loggers...')
+    disable_wandb_if_unconfigured(cfg.get('logger'))
     resolve_wandb_run_name(cfg.get('logger'))
     loggers: list[Logger] = instantiate_loggers(cfg.get('logger'))
 

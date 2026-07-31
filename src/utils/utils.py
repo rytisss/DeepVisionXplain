@@ -232,6 +232,40 @@ def is_running_in_docker() -> bool:
     )
 
 
+def disable_wandb_if_unconfigured(logger_cfg: DictConfig) -> None:
+    """Drops the Wandb logger from `logger_cfg` if no credentials are available for it.
+
+    Without a `WANDB_API_KEY` (and no prior `wandb login`), `wandb.init()` tries to show
+    an interactive login prompt. Inside the Docker container there's no real stdin
+    attached to answer it, so it just hangs forever instead of failing loudly - training
+    silently never proceeds. Rather than let every teammate who hasn't set up Wandb hit
+    that hang, mutate `logger_cfg` in place to drop the wandb entry so the run falls back
+    to CSV-only logging.
+
+    No-ops if wandb isn't configured at all, `WANDB_API_KEY` is set, or `WANDB_MODE` is
+    already set to something that doesn't require login (e.g. 'disabled' or 'offline').
+
+    Args:
+        logger_cfg (DictConfig): The (not yet instantiated) `cfg.logger` config group.
+    """
+    if not logger_cfg or 'wandb' not in logger_cfg:
+        return
+
+    if os.getenv('WANDB_API_KEY'):
+        return
+
+    if os.getenv('WANDB_MODE', '').lower() in ('disabled', 'offline', 'dryrun'):
+        return
+
+    log.warning('WANDB_API_KEY is not set (and WANDB_MODE is not overridden) - skipping '
+               'Wandb logging for this run to avoid hanging on an interactive login prompt. '
+               'Set WANDB_API_KEY in .env to enable it, or WANDB_MODE=disabled to silence '
+               'this warning.')
+
+    with open_dict(logger_cfg):
+        del logger_cfg['wandb']
+
+
 def resolve_wandb_run_name(logger_cfg: DictConfig) -> None:
     """Makes sure the configured Wandb run name (if any) is unique within its project.
 

@@ -10,10 +10,11 @@ wandb:
   offline: False
   id: null # pass correct id to resume experiment!
   anonymous: null # enable anonymous logging
-  project: "inobranda"
+  # Read from your own .env (WANDB_PROJECT / WANDB_ENTITY)
+  project: "${oc.env:WANDB_PROJECT,Test}"
   log_model: False # upload lightning ckpts
   prefix: "" # a string to put at the beginning of metric keys
-  entity: "easyodm" # set to name of your wandb team
+  entity: "${oc.env:WANDB_ENTITY,}" # set via WANDB_ENTITY in .env, or leave unset
   group: ""
   tags: []
   job_type: ""
