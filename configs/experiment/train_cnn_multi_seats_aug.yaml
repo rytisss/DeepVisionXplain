@@ -40,9 +40,7 @@ data:
         p: 0.5
       - _target_: torchvision.transforms.RandomRotation
         degrees: 10
-        fill: 96 # matches DatasetPreprocessor's "grey" background color (96,96,96); a single
-                 # int applies to all RGB bands and sidesteps hydra passing a raw ListConfig
-                 # into torchvision, which errors (TypeError: int() argument ... 'ListConfig')
+        fill: 96 # matches DatasetPreprocessor's "grey" background color (96,96,96)
       - _target_: torchvision.transforms.ColorJitter
         brightness: 0.15
         contrast: 0.15
