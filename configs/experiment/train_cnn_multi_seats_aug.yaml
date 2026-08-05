@@ -1,0 +1,56 @@
+# @package _global_
+
+defaults:
+  - override /data: classification_dir
+  - override /model: cnn_multi_effnet_v2_s_down
+  - override /callbacks: default
+  - override /trainer: default
+  - override /logger: many_loggers
+
+tags: ["classification", "train", "cnn", "augmented"]
+
+seed: 12345
+
+trainer:
+  min_epochs: 30
+  max_epochs: 50
+  gradient_clip_val: 0.5
+  accelerator: gpu
+
+data:
+  image_size: [128, 128]
+  channels: 3
+  batch_size: 32
+  num_workers: 4
+  pin_memory: true
+  # Augmented train_transforms: same base pipeline as train_cnn_multi_seats.yaml
+  # (which only inherits the default flips from configs/data/classification_dir.yaml),
+  # extended with a small rotation and exposure/contrast jitter. Applied on-the-fly to
+  # the already-tiled 128x128 patches by ImageFolder every time a sample is loaded -
+  # nothing is cached to disk. val_test_transforms are left as resize + ToTensor only,
+  # so validation/test still reflect un-augmented, real tiles.
+  train_transforms:
+    _target_: torchvision.transforms.Compose
+    transforms:
+      - _target_: torchvision.transforms.Resize
+        size: ${data.image_size}
+      - _target_: torchvision.transforms.RandomHorizontalFlip
+        p: 0.5
+      - _target_: torchvision.transforms.RandomVerticalFlip
+        p: 0.5
+      - _target_: torchvision.transforms.RandomRotation
+        degrees: 10
+        fill: 96 # matches DatasetPreprocessor's "grey" background color (96,96,96); a single
+                 # int applies to all RGB bands and sidesteps hydra passing a raw ListConfig
+                 # into torchvision, which errors (TypeError: int() argument ... 'ListConfig')
+      - _target_: torchvision.transforms.ColorJitter
+        brightness: 0.15
+        contrast: 0.15
+      - _target_: torchvision.transforms.ToTensor
+
+model:
+  net:
+    multi_head: true
+  ckpt_path: null
+
+export_to_onnx: True

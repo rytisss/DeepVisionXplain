@@ -1,0 +1,32 @@
+# @package _global_
+
+defaults:
+  - override /data: classification_dir
+  - override /model: cnn_multi_effnet_v2_s_down
+  - override /callbacks: default
+  - override /trainer: default
+  - override /logger: many_loggers
+
+tags: ["classification", "train", "cnn"]
+
+seed: 12345
+
+trainer:
+  min_epochs: 30
+  max_epochs: 50
+  gradient_clip_val: 0.5
+  accelerator: gpu
+
+data:
+  image_size: [128, 128]
+  channels: 3
+  batch_size: 32
+  num_workers: 4
+  pin_memory: true
+
+model:
+  net:
+    multi_head: true
+  ckpt_path: null
+
+export_to_onnx: True
