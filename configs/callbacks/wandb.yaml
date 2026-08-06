@@ -1,6 +1,7 @@
 upload_code_as_artifact:
   _target_: src.utils.wandb_callbacks.UploadCodeAsArtifact
   code_dir: ${paths.root_dir}/src
+  use_git: False
 
 upload_ckpts_as_artifact:
   _target_: src.utils.wandb_callbacks.UploadCheckpointsAsArtifact
